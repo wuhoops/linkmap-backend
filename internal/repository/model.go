@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"goHexagonalBlog/internal/core/domain/database"
+	"backend/internal/core/domain/database"
 
 	"gorm.io/gorm"
 )

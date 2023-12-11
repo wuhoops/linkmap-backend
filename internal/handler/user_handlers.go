@@ -1,9 +1,9 @@
 package handler
 
 import (
-	"goHexagonalBlog/internal/core/domain/payload"
-	"goHexagonalBlog/internal/core/domain/response"
-	"goHexagonalBlog/internal/core/ports"
+	"backend/internal/core/domain/payload"
+	"backend/internal/core/domain/response"
+	"backend/internal/core/ports"
 
 	fiber "github.com/gofiber/fiber/v2"
 )

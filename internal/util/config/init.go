@@ -1,7 +1,7 @@
 package config
 
 import (
-	"goHexagonalBlog/internal/util/text"
+	"backend/internal/util/text"
 	"os"
 
 	"github.com/davecgh/go-spew/spew"

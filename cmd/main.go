@@ -2,10 +2,10 @@ package main
 
 import (
 	"context"
-	"goHexagonalBlog/internal/core/services"
-	"goHexagonalBlog/internal/handler"
-	"goHexagonalBlog/internal/repository"
-	"goHexagonalBlog/internal/util/config"
+	"backend/internal/core/services"
+	"backend/internal/handler"
+	"backend/internal/repository"
+	"backend/internal/util/config"
 	"log/slog"
 	"os"
 )

@@ -4,7 +4,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 
-	"goHexagonalBlog/internal/util/config"
+	"backend/internal/util/config"
 )
 
 var Cors = func() fiber.Handler {

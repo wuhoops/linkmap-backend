@@ -2,8 +2,8 @@ package repository
 
 import (
 	"context"
-	"goHexagonalBlog/internal/core/domain/database"
-	"goHexagonalBlog/internal/util/config"
+	"backend/internal/core/domain/database"
+	"backend/internal/util/config"
 
 	"github.com/sirupsen/logrus"
 	"gorm.io/driver/postgres"

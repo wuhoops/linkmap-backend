@@ -1,8 +1,8 @@
 package ports
 
 import (
-	"goHexagonalBlog/internal/core/domain/database"
-	"goHexagonalBlog/internal/core/domain/payload"
+	"backend/internal/core/domain/database"
+	"backend/internal/core/domain/payload"
 
 	fiber "github.com/gofiber/fiber/v2"
 )

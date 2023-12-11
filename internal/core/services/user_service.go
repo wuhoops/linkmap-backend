@@ -1,9 +1,9 @@
 package services
 
 import (
-	"goHexagonalBlog/internal/core/domain/database"
-	"goHexagonalBlog/internal/core/domain/payload"
-	"goHexagonalBlog/internal/core/ports"
+	"backend/internal/core/domain/database"
+	"backend/internal/core/domain/payload"
+	"backend/internal/core/ports"
 
 	"github.com/google/uuid"
 )
