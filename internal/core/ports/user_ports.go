@@ -9,12 +9,12 @@ import (
 
 type IUserService interface {
 	Login(email string, password string) error
-	Register(user payload.NewUser) error
+	Register(user *payload.NewUser) (*database.User, error)
 }
 
 type IUserRepository interface {
 	Login(email string, password string) error
-	Register(user database.User) error
+	Register(user *database.User) (*database.User, error)
 }
 
 type IUserHandlers interface {

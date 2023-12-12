@@ -29,10 +29,18 @@ func New(args1 any, args2 ...any) *InfoResponse {
 				Message: message2,
 			}
 		} else {
-			return &InfoResponse{
-				Success: true,
-				Code:    message,
-				Data:    message2,
+			if ok := len(args2) == 1; ok {
+				return &InfoResponse{
+					Success: true,
+					Message: message,
+					Data:    args2[0],
+				}
+			} else {
+				return &InfoResponse{
+					Success: true,
+					Message: message,
+					Data:    args2,
+				}
 			}
 		}
 	}
