@@ -2,7 +2,6 @@ package services
 
 import (
 	"backend/internal/core/domain/database"
-	"backend/internal/core/domain/payload"
 	"backend/internal/core/ports"
 
 	"github.com/google/uuid"
@@ -29,10 +28,11 @@ func (s *UserService) Login(email string, password string) error {
 	return nil
 }
 
-func (s *UserService) Register(payload *payload.NewUser) (*database.User, error) {
-	user, err := s.userRepository.Register(&database.User{UserId: uuid.New(), Email: payload.Email, Password: payload.Password})
+func (s *UserService) Register(payload *database.User) error {
+	payload.UserId = uuid.New()
+	err := s.userRepository.Register(&database.User{UserId: payload.UserId, Email: payload.Email, Password: payload.Password})
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return user, nil
+	return nil
 }

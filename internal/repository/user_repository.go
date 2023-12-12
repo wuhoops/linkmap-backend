@@ -25,10 +25,10 @@ func (r *UserRepository) Login(email string, password string) error {
 	return nil
 }
 
-func (r *UserRepository) Register(payload *database.User) (*database.User, error) {
+func (r *UserRepository) Register(payload *database.User) error {
 	result := UserModel.Create(&payload)
 	if result.Error != nil {
-		return nil, result.Error
+		return result.Error
 	}
-	return payload, nil
+	return nil
 }
