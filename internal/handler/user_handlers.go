@@ -47,5 +47,5 @@ func (h *UserHandler) Register(c *fiber.Ctx) error {
 			Err:     err,
 		}
 	}
-	return c.JSON(fiber.Map{"Success": true})
+	return c.JSON(response.New("User registered successfully"))
 }

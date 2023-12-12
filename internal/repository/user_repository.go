@@ -28,7 +28,7 @@ func (r *UserRepository) Login(email string, password string) error {
 func (r *UserRepository) Register(payload database.User) error {
 	result := UserModel.Create(payload)
 	if result.Error != nil {
-		return nil
+		return result.Error
 	}
 	return nil
 }
