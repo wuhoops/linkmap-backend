@@ -20,9 +20,15 @@ func main() {
 	userService := services.NewUserService(userRepository)
 	userHandler := handler.NewUserHandlers(userService)
 
+	//Card
+	cardRepository := repository.NewCardRepository(db)
+	cardService := services.NewCardService(cardRepository)
+	cardHandler := handler.NewCardHandlers(cardService)
+
 	// Init router
 	router, err := handler.NewRouter(
 		*userHandler,
+		*cardHandler,
 	)
 	err = router.Serve(config.C.Address)
 	if err != nil {
