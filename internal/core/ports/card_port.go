@@ -9,12 +9,12 @@ import (
 
 type ICardService interface {
 	ListCard(userId uuid.UUID) ([]database.Card, error)
-	CreateCard(payload *database.Card) (*database.Card, error)
+	CreateCard(payload *database.Card) (error)
 }
 
 type ICardRepository interface {
 	ListCard(userId uuid.UUID) ([]database.Card, error)
-	CreateCard(payload *database.Card) (*database.Card, error)
+	CreateCard(payload *database.Card) (error)
 }
 
 type ICardHandlers interface {

@@ -7,7 +7,9 @@ import (
 )
 
 var UserModel *gorm.DB
+var CardModel *gorm.DB
 
 func assignModel() {
 	UserModel = DB.Model(new(database.User))
+	CardModel = DB.Model(new(database.Card))
 }

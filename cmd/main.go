@@ -22,7 +22,7 @@ func main() {
 
 	//Card
 	cardRepository := repository.NewCardRepository(db)
-	cardService := services.NewCardService(cardRepository)
+	cardService := services.NewCardService(cardRepository, userRepository)
 	cardHandler := handler.NewCardHandlers(cardService)
 
 	// Init router

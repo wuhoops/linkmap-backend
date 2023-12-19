@@ -20,6 +20,14 @@ func NewUserService(repository ports.IUserRepository) *UserService {
 	}
 }
 
+func (s *UserService) GetUserInfo(userId uuid.UUID) (*database.User, error) {
+	user, err := s.userRepository.GetUserInfo(userId)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+
 func (s *UserService) Login(email string, password string) error {
 	err := s.userRepository.Login(email, password)
 	if err != nil {

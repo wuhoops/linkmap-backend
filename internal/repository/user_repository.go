@@ -4,6 +4,7 @@ import (
 	"backend/internal/core/domain/database"
 	"backend/internal/core/ports"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -20,8 +21,16 @@ func NewUserRepository(db *gorm.DB) *UserRepository {
 	}
 }
 
+func (r *UserRepository) GetUserInfo(userId uuid.UUID) (*database.User, error) {
+	var user database.User
+	result := UserModel.Find(&user, userId)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &user, nil
+}
+
 func (r *UserRepository) Login(email string, password string) error {
-	//Here your code for login in mongo database
 	return nil
 }
 

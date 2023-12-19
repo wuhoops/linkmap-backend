@@ -34,8 +34,14 @@ func NewRouter(
 	{
 		user := api.Group("/user")
 		{
+			user.Get("/info", userHandler.GetUserInfo)
 			user.Post("/register", userHandler.Register)
 			user.Post("/login", userHandler.Login)
+		}
+
+		card := api.Group("/card")
+		{
+			card.Post("/create", cardHandler.CreateCard)
 		}
 	}
 

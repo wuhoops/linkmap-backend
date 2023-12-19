@@ -21,11 +21,15 @@ func NewCardRepository(db *gorm.DB) *CardRepository {
 	}
 }
 
-func (r *CardRepository) ListCard(id uuid.UUID) ([]database.Card, error) {
-	//Here your code for fetching cards by id
-	return nil, nil
+func (r *CardRepository) CreateCard(payload *database.Card) error {
+	result := CardModel.Create(&payload)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
 }
 
-func (r *CardRepository) CreateCard(payload *database.Card) (*database.Card, error) {
+func (r *CardRepository) ListCard(id uuid.UUID) ([]database.Card, error) {
+	//Here your code for fetching cards by id
 	return nil, nil
 }
