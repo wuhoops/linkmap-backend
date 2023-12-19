@@ -35,7 +35,7 @@ func NewRouter(
 		user := api.Group("/user")
 		{
 			user.Post("/register", userHandler.Register)
-			user.Post("/loggin", userHandler.Login)
+			user.Post("/login", userHandler.Login)
 		}
 	}
 

@@ -6,7 +6,6 @@ import (
 	"backend/internal/core/ports"
 
 	fiber "github.com/gofiber/fiber/v2"
-	"github.com/sirupsen/logrus"
 )
 
 type UserHandler struct {
@@ -40,7 +39,12 @@ func (h *UserHandler) Register(c *fiber.Ctx) error {
 			Err:     err,
 		}
 	}
-	logrus.Info(user)
+
+	if user.Email == "" || user.Password == "" {
+		return &response.Error{
+			Message: "Unable to parse body",
+		}
+	}
 
 	err := h.userService.Register(&user)
 	if err != nil {
@@ -49,6 +53,6 @@ func (h *UserHandler) Register(c *fiber.Ctx) error {
 			Err:     err,
 		}
 	}
-	logrus.Info(user)
+
 	return c.JSON(response.New("User registered successfully", user))
 }

@@ -18,6 +18,6 @@ type ICardRepository interface {
 }
 
 type ICardHandlers interface {
-	CreateCard(c *fiber.Ctx) error
 	ListCard(c *fiber.Ctx) error
+	CreateCard(c *fiber.Ctx) error
 }
