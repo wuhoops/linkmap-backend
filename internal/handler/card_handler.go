@@ -6,7 +6,6 @@ import (
 	"backend/internal/core/ports"
 
 	fiber "github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
 )
 
 type CardHandler struct {
@@ -30,23 +29,27 @@ func (h *CardHandler) CreateCard(c *fiber.Ctx) error {
 		}
 	}
 
-	emptyUUID, _ := uuid.Parse("")
-	if card.OwnerID == emptyUUID || card.Topic == "" || card.Link == "" {
-		return &response.Error{
-			Message: "Missing fields",
-		}
+	if card.OwnerID == "" || card.Topic == "" || card.Link == "" {
+		return c.JSON(response.NewError("Missing required field."))
+
 	}
 
 	err := h.cardService.CreateCard(&card)
 	if err != nil {
-		return &response.Error{
-			Message: "Unable to create card",
-			Err:     err,
-		}
+		return c.JSON(response.NewError("Unable to create card.", err))
 	}
 
-	return c.JSON(response.New("Card created successfully", card))}
+	return c.JSON(response.New("Card created successfully", card))
+}
 
 func (h *CardHandler) ListCard(c *fiber.Ctx) error {
-	return nil
+	var userId string
+	userId = c.Query("user_id")
+
+	cards, err := h.cardService.ListCard(userId)
+	if err != nil {
+		return c.JSON(response.NewError("Unable to list card", err))
+	}
+
+	return c.JSON(response.New("List card successfully", cards))
 }

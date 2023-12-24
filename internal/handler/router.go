@@ -20,14 +20,14 @@ func NewRouter(
 		StrictRouting: true,
 		ReadTimeout:   5 * time.Second,
 		WriteTimeout:  5 * time.Second,
-		AppName:       "GO Hexagonal Practice API",
+		AppName:       "Go Hexagonal LinkMap API",
 	})
 	router.Use(Cors)
 
 	router.All("/", func(c *fiber.Ctx) error {
 		return c.JSON(fiber.Map{
 			"Success": true,
-			"Message": "Go Hexagonal Practice API",
+			"Message": "Go Hexagonal LinkMap API",
 		})
 	})
 	api := router.Group("/api")
@@ -41,6 +41,7 @@ func NewRouter(
 
 		card := api.Group("/card")
 		{
+			card.Get("/list", cardHandler.ListCard)
 			card.Post("/create", cardHandler.CreateCard)
 		}
 	}

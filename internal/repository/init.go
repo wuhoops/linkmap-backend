@@ -1,9 +1,9 @@
 package repository
 
 import (
-	"context"
 	"backend/internal/core/domain/database"
 	"backend/internal/util/config"
+	"context"
 
 	"github.com/sirupsen/logrus"
 	"gorm.io/driver/postgres"
@@ -20,7 +20,6 @@ func NewDB(ctx context.Context) (*gorm.DB, error) {
 		logrus.Fatal("UNABLE TO MIGRATE GORM MODEL")
 	}
 
-	assignModel()
 	logrus.Debugln("INITIALIZE MYSQL CONNECTION")
 	return db, err
 }

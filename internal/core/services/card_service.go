@@ -2,10 +2,10 @@ package services
 
 import (
 	"backend/internal/core/domain/database"
+	"backend/internal/core/domain/payload"
 	"backend/internal/core/ports"
 
 	"github.com/google/uuid"
-	"github.com/sirupsen/logrus"
 )
 
 type CardService struct {
@@ -24,21 +24,21 @@ func NewCardService(cardRepo ports.ICardRepository, userRepo ports.IUserReposito
 }
 
 func (s *CardService) CreateCard(payload *database.Card) error {
-	payload.CardId = uuid.New()
+	payload.CardId = uuid.New().String()
 	err := s.cardRepository.CreateCard(payload)
 	if err != nil {
 		return err
 	}
-
-	user, err := s.userRepository.GetUserInfo(payload.OwnerID)
 	if err != nil {
 		return err
 	}
-	logrus.Info(user)
-	payload.Owner = *user
 	return nil
 }
 
-func (s *CardService) ListCard(userId uuid.UUID) ([]database.Card, error) {
-	return nil, nil
+func (s *CardService) ListCard(userId string) (*payload.CardList, error) {
+	cards, err := s.cardRepository.ListCard(userId)
+	if err != nil {
+		return nil, err
+	}
+	return cards, nil
 }

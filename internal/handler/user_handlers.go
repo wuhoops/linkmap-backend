@@ -6,7 +6,6 @@ import (
 	"backend/internal/core/ports"
 
 	fiber "github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
 )
 
 type UserHandler struct {
@@ -21,14 +20,11 @@ func NewUserHandlers(userService ports.IUserService) *UserHandler {
 	}
 }
 
-func (h *UserHandler) GetUserInfo(c *fiber.Ctx) error{
-	userId := uuid.MustParse(c.Query("user_id"))
+func (h *UserHandler) GetUserInfo(c *fiber.Ctx) error {
+	userId := c.Query("user_id")
 	user, err := h.userService.GetUserInfo(userId)
 	if err != nil {
-		return &response.Error{
-			Message: "Unable to register user",
-			Err:     err,
-		}
+		return c.JSON(response.NewError("Unable to get user info", err))
 	}
 	return c.JSON(response.New("Get user info successfully", user))
 }
@@ -36,7 +32,6 @@ func (h *UserHandler) GetUserInfo(c *fiber.Ctx) error{
 func (h *UserHandler) Login(c *fiber.Ctx) error {
 	var email string
 	var password string
-	//Extract the body and get the email and password
 	err := h.userService.Login(email, password)
 	if err != nil {
 		return err

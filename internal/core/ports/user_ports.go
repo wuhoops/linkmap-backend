@@ -2,19 +2,19 @@ package ports
 
 import (
 	"backend/internal/core/domain/database"
+	"backend/internal/core/domain/payload"
 
 	fiber "github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
 )
 
 type IUserService interface {
-	GetUserInfo(userId uuid.UUID) (*database.User, error)
+	GetUserInfo(userId string) (*payload.UserInfo, error)
 	Login(email string, password string) error
 	Register(payload *database.User) error
 }
 
 type IUserRepository interface {
-	GetUserInfo(userId uuid.UUID) (*database.User, error)
+	GetUserInfo(userId string) (*payload.UserInfo, error)
 	Login(email string, password string) error
 	Register(payload *database.User) error
 }

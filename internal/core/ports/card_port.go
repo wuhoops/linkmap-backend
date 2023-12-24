@@ -2,19 +2,19 @@ package ports
 
 import (
 	"backend/internal/core/domain/database"
+	"backend/internal/core/domain/payload"
 
 	fiber "github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
 )
 
 type ICardService interface {
-	ListCard(userId uuid.UUID) ([]database.Card, error)
-	CreateCard(payload *database.Card) (error)
+	ListCard(userId string) (*payload.CardList, error)
+	CreateCard(payload *database.Card) error
 }
 
 type ICardRepository interface {
-	ListCard(userId uuid.UUID) ([]database.Card, error)
-	CreateCard(payload *database.Card) (error)
+	ListCard(userId string) (*payload.CardList, error)
+	CreateCard(payload *database.Card) error
 }
 
 type ICardHandlers interface {

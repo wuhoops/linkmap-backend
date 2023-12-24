@@ -2,9 +2,9 @@ package repository
 
 import (
 	"backend/internal/core/domain/database"
+	"backend/internal/core/domain/payload"
 	"backend/internal/core/ports"
 
-	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -21,9 +21,9 @@ func NewUserRepository(db *gorm.DB) *UserRepository {
 	}
 }
 
-func (r *UserRepository) GetUserInfo(userId uuid.UUID) (*database.User, error) {
-	var user database.User
-	result := UserModel.Find(&user, userId)
+func (r *UserRepository) GetUserInfo(userId string) (*payload.UserInfo, error) {
+	var user payload.UserInfo
+	result := r.client.Model(database.User{}).Where("user_id = ?", userId).First(&user)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -35,7 +35,7 @@ func (r *UserRepository) Login(email string, password string) error {
 }
 
 func (r *UserRepository) Register(payload *database.User) error {
-	result := UserModel.Create(&payload)
+	result := r.client.Model(database.User{}).Create(&payload)
 	if result.Error != nil {
 		return result.Error
 	}
