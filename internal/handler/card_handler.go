@@ -4,7 +4,6 @@ import (
 	"backend/internal/core/domain/database"
 	"backend/internal/core/domain/response"
 	"backend/internal/core/ports"
-
 	fiber "github.com/gofiber/fiber/v2"
 )
 
@@ -52,4 +51,20 @@ func (h *CardHandler) ListCard(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(response.New("List card successfully", cards))
+}
+
+func (h *CardHandler) EditCard(c *fiber.Ctx) error {
+	card := database.Card{}
+	if err := c.BodyParser(&card); err != nil {
+		return &response.Error{
+			Message: "Unable to parse body",
+			Err:     err,
+		}
+	}
+	_, err := h.cardService.EditCard(&card)
+	if err != nil {
+		return err
+	}
+	return c.JSON(response.New("List card successfully"))
+
 }

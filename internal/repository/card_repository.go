@@ -41,11 +41,19 @@ func (r *CardRepository) ListCard(id string) (*payload.CardList, error) {
 	}
 
 	cardList := []payload.Card{}
-	result2 := r.client.Model(database.Card{}).Where("owner_id = ?", id).Take(&cardList)
+	result2 := r.client.Model(database.Card{}).Where("owner_id = ?", id).Find(&cardList)
 	if result2.Error != nil {
 		return nil, result2.Error
 	}
 
 	cardMap := payload.CardList{Card: cardList}
 	return &cardMap, nil
+}
+
+func (r *CardRepository) EditCard(newCard *database.Card) (*database.Card, error) {
+	result := r.client.Model(database.Card{}).Where("card_id = ?", newCard.CardId).Updates(newCard)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return nil, nil
 }

@@ -42,3 +42,11 @@ func (s *CardService) ListCard(userId string) (*payload.CardList, error) {
 	}
 	return cards, nil
 }
+
+func (s *CardService) EditCard(newCard *database.Card) (*database.Card, error) {
+	_, err := s.cardRepository.EditCard(newCard)
+	if err != nil {
+		return nil, err
+	}
+	return nil, nil
+}
