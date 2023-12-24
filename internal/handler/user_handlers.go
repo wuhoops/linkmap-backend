@@ -40,7 +40,7 @@ func (h *UserHandler) Login(c *fiber.Ctx) error {
 }
 
 func (h *UserHandler) Register(c *fiber.Ctx) error {
-	var user database.User
+	user := database.User{}
 	if err := c.BodyParser(&user); err != nil {
 		return &response.Error{
 			Message: "Unable to parse body",

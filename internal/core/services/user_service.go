@@ -4,6 +4,7 @@ import (
 	"backend/internal/core/domain/database"
 	"backend/internal/core/domain/payload"
 	"backend/internal/core/ports"
+	"golang.org/x/crypto/bcrypt"
 
 	"github.com/google/uuid"
 )
@@ -39,9 +40,15 @@ func (s *UserService) Login(email string, password string) error {
 
 func (s *UserService) Register(payload *database.User) error {
 	payload.UserId = uuid.New().String()
-	err := s.userRepository.Register(&database.User{UserId: payload.UserId, Email: payload.Email, Password: payload.Password})
-	if err != nil {
-		return err
+	bytes, err1 := bcrypt.GenerateFromPassword([]byte(payload.UserId), 14)
+	if err1 != nil {
+		return err1
+	}
+	payload.Password = string(bytes)
+
+	err2 := s.userRepository.Register(&database.User{UserId: payload.UserId, Email: payload.Email, Password: payload.Password})
+	if err2 != nil {
+		return err2
 	}
 	return nil
 }

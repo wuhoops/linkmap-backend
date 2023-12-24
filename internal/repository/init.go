@@ -20,7 +20,7 @@ func NewDB(ctx context.Context) (*gorm.DB, error) {
 		logrus.Fatal("UNABLE TO MIGRATE GORM MODEL")
 	}
 
-	logrus.Debugln("INITIALIZE MYSQL CONNECTION")
+	logrus.Debugln("INITIALIZE DB CONNECTION")
 	return db, err
 }
 
