@@ -4,7 +4,7 @@ import (
 	"backend/internal/core/domain/database"
 	"backend/internal/core/domain/payload"
 
-	fiber "github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2"
 )
 
 type IUserService interface {

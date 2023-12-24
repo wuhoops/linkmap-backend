@@ -6,7 +6,7 @@ import (
 	"backend/internal/core/ports"
 	"strings"
 
-	fiber "github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2"
 )
 
 type UserHandler struct {
@@ -37,7 +37,7 @@ func (h *UserHandler) Login(c *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	return nil
+	return c.JSON(response.New("Login successfully"))
 }
 
 func (h *UserHandler) Register(c *fiber.Ctx) error {
