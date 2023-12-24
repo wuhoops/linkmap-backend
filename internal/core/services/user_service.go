@@ -4,9 +4,8 @@ import (
 	"backend/internal/core/domain/database"
 	"backend/internal/core/domain/payload"
 	"backend/internal/core/ports"
-	"golang.org/x/crypto/bcrypt"
-
 	"github.com/google/uuid"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type UserService struct {

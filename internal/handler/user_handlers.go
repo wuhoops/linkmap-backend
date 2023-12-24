@@ -4,6 +4,7 @@ import (
 	"backend/internal/core/domain/database"
 	"backend/internal/core/domain/response"
 	"backend/internal/core/ports"
+	"strings"
 
 	fiber "github.com/gofiber/fiber/v2"
 )
@@ -42,25 +43,21 @@ func (h *UserHandler) Login(c *fiber.Ctx) error {
 func (h *UserHandler) Register(c *fiber.Ctx) error {
 	user := database.User{}
 	if err := c.BodyParser(&user); err != nil {
-		return &response.Error{
-			Message: "Unable to parse body",
-			Err:     err,
-		}
+		return c.JSON(response.NewError("Unable to parse body"))
 	}
-
-	if user.Email == "" || user.Password == "" {
-		return &response.Error{
-			Message: "Unable to parse body",
-		}
+	if user.Email == "" {
+		return c.JSON(response.NewError("Email is not provided"))
+	}
+	if user.Password == "" {
+		return c.JSON(response.NewError("Password is not provided"))
 	}
 
 	err := h.userService.Register(&user)
 	if err != nil {
-		return &response.Error{
-			Message: "Unable to register user",
-			Err:     err,
+		if strings.Contains(err.Error(), "duplicate key value violates unique constraint") {
+			return c.JSON(response.NewError("Email already exist"))
 		}
+		return c.JSON(response.NewError("Unable to register user"))
 	}
-
 	return c.JSON(response.New("User registered successfully", user))
 }
