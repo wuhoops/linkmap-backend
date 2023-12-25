@@ -56,7 +56,7 @@ func (h *CardHandler) ListCard(c *fiber.Ctx) error {
 
 	cards, err := h.cardService.ListCard(userId)
 	if err != nil {
-		return c.Status(400).JSON(response.NewError("Unable to list card", err.Error()))
+		return c.Status(400).JSON(response.NewError(err.Error()))
 	}
 
 	return c.JSON(response.New("List card successfully", cards))
