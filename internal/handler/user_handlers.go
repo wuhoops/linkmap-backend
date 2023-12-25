@@ -24,7 +24,7 @@ func (h *UserHandler) GetUserInfo(c *fiber.Ctx) error {
 	userId := c.Query("user_id")
 	user, err := h.userService.GetUserInfo(userId)
 	if err != nil {
-		return c.JSON(response.NewError(err.Error()))
+		return c.Status(400).JSON(response.NewError(err.Error()))
 	}
 	userMap := payload.UserInfo{User: *user}
 	return c.JSON(response.New("Get user info successfully", userMap))
@@ -54,7 +54,7 @@ func (h *UserHandler) Register(c *fiber.Ctx) error {
 
 	err := h.userService.Register(&user)
 	if err != nil {
-		return c.JSON(response.NewError(err.Error()))
+		return c.Status(400).JSON(response.NewError(err.Error()))
 	}
 	userMap := payload.UserInfo{User: payload.User{UserId: user.UserId, Email: user.Email}}
 	return c.JSON(response.New("User registered successfully", userMap))
