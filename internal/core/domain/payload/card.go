@@ -7,6 +7,10 @@ type Card struct {
 	Link        string `json:"link"`
 }
 
+type CardEdit struct {
+	Card Card `json:"card"`
+}
+
 type CardList struct {
 	Card []Card `json:"card"`
 }

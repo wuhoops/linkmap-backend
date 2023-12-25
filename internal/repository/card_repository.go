@@ -46,10 +46,10 @@ func (r *CardRepository) ListCard(id string) ([]payload.Card, error) {
 	return cardList, nil
 }
 
-func (r *CardRepository) EditCard(newCard *database.Card) (*database.Card, error) {
+func (r *CardRepository) EditCard(newCard *payload.Card) error {
 	result := r.client.Model(database.Card{}).Where("card_id = ?", newCard.CardId).Updates(newCard)
 	if result.Error != nil {
-		return nil, result.Error
+		return result.Error
 	}
-	return nil, nil
+	return nil
 }

@@ -11,14 +11,14 @@ type ICardService interface {
 	CardInfo(cardId string) (*payload.Card, error)
 	ListCard(userId string) (*payload.CardList, error)
 	CreateCard(payload *database.Card) error
-	EditCard(newCard *database.Card) (*database.Card, error)
+	EditCard(newCard *payload.Card) error
 }
 
 type ICardRepository interface {
 	CardInfo(cardId string) (*payload.Card, error)
 	ListCard(userId string) ([]payload.Card, error)
 	CreateCard(payload *database.Card) error
-	EditCard(newCard *database.Card) (*database.Card, error)
+	EditCard(newCard *payload.Card) error
 }
 
 type ICardHandlers interface {

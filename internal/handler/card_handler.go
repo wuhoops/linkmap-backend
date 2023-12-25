@@ -2,6 +2,7 @@ package handler
 
 import (
 	"backend/internal/core/domain/database"
+	"backend/internal/core/domain/payload"
 	"backend/internal/core/domain/response"
 	"backend/internal/core/ports"
 	"github.com/gofiber/fiber/v2"
@@ -66,16 +67,17 @@ func (h *CardHandler) ListCard(c *fiber.Ctx) error {
 }
 
 func (h *CardHandler) EditCard(c *fiber.Ctx) error {
-	card := database.Card{}
+	card := payload.Card{}
 	if err := c.BodyParser(&card); err != nil {
 		return &response.Error{
 			Message: "Unable to parse body",
 			Err:     err,
 		}
 	}
-	newCard, err := h.cardService.EditCard(&card)
+	err := h.cardService.EditCard(&card)
 	if err != nil {
-		return c.JSON(response.NewError("Unable to edit card", err))
+		return c.JSON(response.NewError("Unable to edit card", err.Error()))
 	}
-	return c.JSON(response.New("Edit card successfully", newCard))
+	cardMap := payload.CardEdit{Card: card}
+	return c.JSON(response.New("Edit card successfully", cardMap))
 }
