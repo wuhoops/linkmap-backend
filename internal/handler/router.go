@@ -37,6 +37,7 @@ func NewRouter(
 			user.Get("/info", userHandler.GetUserInfo)
 			user.Post("/register", userHandler.Register)
 			user.Post("/login", userHandler.Login)
+			user.Patch("/UpsertUsername", userHandler.UpsertUserName)
 		}
 
 		card := api.Group("/card")

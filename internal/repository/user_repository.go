@@ -4,6 +4,7 @@ import (
 	"backend/internal/core/domain/database"
 	"backend/internal/core/domain/payload"
 	"backend/internal/core/ports"
+	"errors"
 	"gorm.io/gorm"
 )
 
@@ -37,6 +38,17 @@ func (r *UserRepository) Register(payload *database.User) error {
 	result := r.client.Model(database.User{}).Create(&payload)
 	if result.Error != nil {
 		return result.Error
+	}
+	return nil
+}
+
+func (r *UserRepository) CreateUserName(userId string, userName string) error {
+	result := r.client.Model(database.User{}).Where("user_id = ?", userId).Update("user_name", userName)
+	if result.Error != nil {
+		return result.Error
+	}
+	if result.RowsAffected == 0 {
+		return errors.New("user not found")
 	}
 	return nil
 }

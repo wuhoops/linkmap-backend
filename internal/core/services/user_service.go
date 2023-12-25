@@ -51,3 +51,11 @@ func (s *UserService) Register(payload *database.User) error {
 	}
 	return nil
 }
+
+func (s *UserService) CreateUserName(userId string, userName string) error {
+	err := s.userRepository.CreateUserName(userId, userName)
+	if err != nil {
+		return err
+	}
+	return nil
+}
