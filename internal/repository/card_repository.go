@@ -53,3 +53,11 @@ func (r *CardRepository) EditCard(newCard *payload.Card) error {
 	}
 	return nil
 }
+
+func (r *CardRepository) DeleteCard(cardId string) error {
+	result := r.client.Model(database.Card{}).Where("card_id = ?", cardId).Delete(&database.Card{})
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}

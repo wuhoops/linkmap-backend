@@ -12,6 +12,7 @@ type ICardService interface {
 	ListCard(userId string) (*payload.CardList, error)
 	CreateCard(payload *database.Card) error
 	EditCard(newCard *payload.Card) error
+	DeleteCard(cardId string) error
 }
 
 type ICardRepository interface {
@@ -19,6 +20,7 @@ type ICardRepository interface {
 	ListCard(userId string) ([]payload.Card, error)
 	CreateCard(payload *database.Card) error
 	EditCard(newCard *payload.Card) error
+	DeleteCard(cardId string) error
 }
 
 type ICardHandlers interface {
@@ -26,4 +28,5 @@ type ICardHandlers interface {
 	ListCard(c *fiber.Ctx) error
 	CreateCard(c *fiber.Ctx) error
 	EditCard(c *fiber.Ctx) error
+	DeleteCard(c *fiber.Ctx) error
 }

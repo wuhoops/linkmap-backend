@@ -63,3 +63,15 @@ func (s *CardService) EditCard(newCard *payload.Card) error {
 	}
 	return nil
 }
+
+func (s *CardService) DeleteCard(cardId string) error {
+	if _, err := s.cardRepository.CardInfo(cardId); err != nil {
+		return err
+	}
+
+	err := s.cardRepository.DeleteCard(cardId)
+	if err != nil {
+		return err
+	}
+	return nil
+}

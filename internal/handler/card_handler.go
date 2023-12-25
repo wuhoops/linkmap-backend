@@ -74,3 +74,15 @@ func (h *CardHandler) EditCard(c *fiber.Ctx) error {
 	cardMap := payload.CardEdit{Card: card}
 	return c.JSON(response.New("Edit card successfully", cardMap))
 }
+
+func (h *CardHandler) DeleteCard(c *fiber.Ctx) error {
+	var cardId string
+	cardId = c.Query("card_id")
+
+	err := h.cardService.DeleteCard(cardId)
+	if err != nil {
+		return c.Status(400).JSON(response.NewError("Unable to delete card", err.Error()))
+	}
+
+	return c.JSON(response.New("Delete card successfully", nil))
+}

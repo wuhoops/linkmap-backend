@@ -44,6 +44,7 @@ func NewRouter(
 			card.Get("/list", cardHandler.ListCard)
 			card.Post("/create", cardHandler.CreateCard)
 			card.Patch("/update", cardHandler.EditCard)
+			card.Delete("/delete", cardHandler.DeleteCard)
 		}
 	}
 
