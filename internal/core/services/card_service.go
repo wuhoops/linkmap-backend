@@ -4,7 +4,6 @@ import (
 	"backend/internal/core/domain/database"
 	"backend/internal/core/domain/payload"
 	"backend/internal/core/ports"
-
 	"github.com/google/uuid"
 )
 
@@ -23,12 +22,17 @@ func NewCardService(cardRepo ports.ICardRepository, userRepo ports.IUserReposito
 	}
 }
 
+func (s *CardService) CardInfo(cardId string) (*payload.Card, error) {
+	card, err := s.cardRepository.CardInfo(cardId)
+	if err != nil {
+		return nil, err
+	}
+	return card, nil
+}
+
 func (s *CardService) CreateCard(payload *database.Card) error {
 	payload.CardId = uuid.New().String()
 	err := s.cardRepository.CreateCard(payload)
-	if err != nil {
-		return err
-	}
 	if err != nil {
 		return err
 	}
@@ -36,11 +40,16 @@ func (s *CardService) CreateCard(payload *database.Card) error {
 }
 
 func (s *CardService) ListCard(userId string) (*payload.CardList, error) {
+	if _, err := s.userRepository.GetUserInfo(userId); err != nil {
+		return nil, err
+	}
+
 	cards, err := s.cardRepository.ListCard(userId)
 	if err != nil {
 		return nil, err
 	}
-	return cards, nil
+	cardMap := payload.CardList{Card: cards}
+	return &cardMap, nil
 }
 
 func (s *CardService) EditCard(newCard *database.Card) (*database.Card, error) {

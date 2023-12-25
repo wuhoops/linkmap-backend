@@ -4,7 +4,7 @@ import (
 	"backend/internal/core/domain/database"
 	"backend/internal/core/domain/response"
 	"backend/internal/core/ports"
-	fiber "github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2"
 )
 
 type CardHandler struct {
@@ -41,6 +41,18 @@ func (h *CardHandler) CreateCard(c *fiber.Ctx) error {
 	return c.JSON(response.New("Card created successfully", card))
 }
 
+func (h *CardHandler) CardInfo(c *fiber.Ctx) error {
+	var cardId string
+	cardId = c.Query("card_id")
+
+	card, err := h.cardService.CardInfo(cardId)
+	if err != nil {
+		return c.JSON(response.NewError("Unable to get card info", err))
+	}
+
+	return c.JSON(response.New("Get card info successfully", card))
+}
+
 func (h *CardHandler) ListCard(c *fiber.Ctx) error {
 	var userId string
 	userId = c.Query("user_id")
@@ -61,10 +73,9 @@ func (h *CardHandler) EditCard(c *fiber.Ctx) error {
 			Err:     err,
 		}
 	}
-	_, err := h.cardService.EditCard(&card)
+	newCard, err := h.cardService.EditCard(&card)
 	if err != nil {
-		return err
+		return c.JSON(response.NewError("Unable to edit card", err))
 	}
-	return c.JSON(response.New("List card successfully"))
-
+	return c.JSON(response.New("Edit card successfully", newCard))
 }

@@ -4,8 +4,6 @@ import (
 	"backend/internal/core/domain/database"
 	"backend/internal/core/domain/payload"
 	"backend/internal/core/ports"
-	"errors"
-
 	"gorm.io/gorm"
 )
 
@@ -30,24 +28,22 @@ func (r *CardRepository) CreateCard(payload *database.Card) error {
 	return nil
 }
 
-func (r *CardRepository) ListCard(id string) (*payload.CardList, error) {
-	user := database.User{}
-	result1 := r.client.Model(database.User{}).First(&user, "user_id = ?", id)
-	if result1.Error != nil {
-		if errors.Is(result1.Error, gorm.ErrRecordNotFound) {
-			return nil, result1.Error
-		}
-		return nil, result1.Error
+func (r *CardRepository) CardInfo(cardId string) (*payload.Card, error) {
+	var card *payload.Card
+	result := r.client.Model(database.Card{}).First(&card, "card_id = ?", cardId)
+	if result.Error != nil {
+		return nil, result.Error
 	}
+	return card, nil
+}
 
-	cardList := []payload.Card{}
-	result2 := r.client.Model(database.Card{}).Where("owner_id = ?", id).Find(&cardList)
-	if result2.Error != nil {
-		return nil, result2.Error
+func (r *CardRepository) ListCard(id string) ([]payload.Card, error) {
+	var cardList []payload.Card
+	result := r.client.Model(database.Card{}).Where("owner_id = ?", id).Find(&cardList)
+	if result.Error != nil {
+		return nil, result.Error
 	}
-
-	cardMap := payload.CardList{Card: cardList}
-	return &cardMap, nil
+	return cardList, nil
 }
 
 func (r *CardRepository) EditCard(newCard *database.Card) (*database.Card, error) {
