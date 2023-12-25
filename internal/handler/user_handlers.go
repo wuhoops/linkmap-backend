@@ -2,6 +2,7 @@ package handler
 
 import (
 	"backend/internal/core/domain/database"
+	"backend/internal/core/domain/payload"
 	"backend/internal/core/domain/response"
 	"backend/internal/core/ports"
 	"strings"
@@ -27,7 +28,8 @@ func (h *UserHandler) GetUserInfo(c *fiber.Ctx) error {
 	if err != nil {
 		return c.JSON(response.NewError("Unable to get user info", err))
 	}
-	return c.JSON(response.New("Get user info successfully", user))
+	userMap := payload.UserInfo{User: *user}
+	return c.JSON(response.New("Get user info successfully", userMap))
 }
 
 func (h *UserHandler) Login(c *fiber.Ctx) error {
@@ -59,5 +61,7 @@ func (h *UserHandler) Register(c *fiber.Ctx) error {
 		}
 		return c.JSON(response.NewError("Unable to register user"))
 	}
-	return c.JSON(response.New("User registered successfully", user))
+	userMap := payload.UserInfo{User: payload.User{UserId: user.UserId, Email: user.Email}}
+
+	return c.JSON(response.New("User registered successfully", userMap))
 }

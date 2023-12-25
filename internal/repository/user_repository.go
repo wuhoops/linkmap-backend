@@ -20,8 +20,8 @@ func NewUserRepository(db *gorm.DB) *UserRepository {
 	}
 }
 
-func (r *UserRepository) GetUserInfo(userId string) (*payload.UserInfo, error) {
-	var user payload.UserInfo
+func (r *UserRepository) GetUserInfo(userId string) (*payload.User, error) {
+	var user payload.User
 	result := r.client.Model(database.User{}).Where("user_id = ?", userId).First(&user)
 	if result.Error != nil {
 		return nil, result.Error

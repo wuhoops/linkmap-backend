@@ -8,13 +8,13 @@ import (
 )
 
 type IUserService interface {
-	GetUserInfo(userId string) (*payload.UserInfo, error)
+	GetUserInfo(userId string) (*payload.User, error)
 	Login(email string, password string) error
 	Register(payload *database.User) error
 }
 
 type IUserRepository interface {
-	GetUserInfo(userId string) (*payload.UserInfo, error)
+	GetUserInfo(userId string) (*payload.User, error)
 	Login(email string, password string) error
 	Register(payload *database.User) error
 }
