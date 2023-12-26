@@ -2,7 +2,6 @@ package repository
 
 import (
 	"backend/internal/core/domain/database"
-	"backend/internal/core/domain/payload"
 	"backend/internal/core/ports"
 	"errors"
 	"gorm.io/gorm"
@@ -21,13 +20,13 @@ func NewUserRepository(db *gorm.DB) *UserRepository {
 	}
 }
 
-func (r *UserRepository) GetUserById(userId string) (*payload.User, error) {
-	var user payload.User
+func (r *UserRepository) GetUserById(userId string) (*database.User, error) {
+	var user *database.User
 	result := r.client.Model(database.User{}).Where("user_id = ?", userId).First(&user)
 	if result.Error != nil {
 		return nil, result.Error
 	}
-	return &user, nil
+	return user, nil
 }
 
 func (r *UserRepository) Login(email string, password string) error {

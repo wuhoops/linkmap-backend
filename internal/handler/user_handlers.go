@@ -20,14 +20,35 @@ func NewUserHandlers(userService ports.IUserService) *UserHandler {
 	}
 }
 
+// Get user by id
+type getUserReq struct {
+	UserId string `json:"user_id"`
+}
+
 func (h *UserHandler) GetUserById(c *fiber.Ctx) error {
-	userId := c.Query("user_id")
-	user, err := h.userService.GetUserById(userId)
+	var req getUserReq
+	req.UserId = c.Query("user_id")
+	if req.UserId == "" {
+		return c.Status(400).JSON(response.NewError("Unable to parse body"))
+	}
+
+	user, err := h.userService.GetUserById(req.UserId)
 	if err != nil {
 		return c.Status(400).JSON(response.NewError(err.Error()))
 	}
-	userMap := payload.UserInfo{User: *user}
-	return c.JSON(response.New("Get user info successfully", userMap))
+	userRes := payload.User{
+		UserId: user.UserId,
+		Email:  user.Email,
+	}
+	res := map[string]interface{}{
+		"user": userRes,
+	}
+	return c.JSON(response.New("Get user info successfully", res))
+}
+
+// Login
+type loginReq struct {
+	UserId string `json:"user_id"`
 }
 
 func (h *UserHandler) Login(c *fiber.Ctx) error {
@@ -40,30 +61,60 @@ func (h *UserHandler) Login(c *fiber.Ctx) error {
 	return c.JSON(response.New("Login successfully"))
 }
 
+// Register
+type registerReq struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+	Username string `json:"username"`
+}
+
 func (h *UserHandler) Register(c *fiber.Ctx) error {
-	user := database.User{}
-	if err := c.BodyParser(&user); err != nil {
+	var req registerReq
+	if err := c.BodyParser(&req); err != nil {
 		return c.JSON(response.NewError("Unable to parse body"))
 	}
-	if user.Email == "" {
+	if req.Email == "" {
 		return c.JSON(response.NewError("Email is not provided"))
 	}
-	if user.Password == "" {
+	if req.Password == "" {
 		return c.JSON(response.NewError("Password is not provided"))
 	}
+	if req.Username == "" {
+		return c.JSON(response.NewError("Username is not provided"))
+	}
 
-	err := h.userService.Register(&user)
+	userReq := database.User{
+		Email:    req.Email,
+		Password: req.Password,
+		UserName: req.Username,
+	}
+	err := h.userService.Register(&userReq)
 	if err != nil {
 		return c.Status(400).JSON(response.NewError(err.Error()))
 	}
-	userMap := payload.UserInfo{User: payload.User{UserId: user.UserId, Email: user.Email}}
-	return c.JSON(response.New("User registered successfully", userMap))
+	userRes := payload.User{
+		UserId:   userReq.UserId,
+		Email:    userReq.Email,
+		Username: userReq.UserName,
+	}
+	res := map[string]interface{}{
+		"user": userRes,
+	}
+	return c.JSON(response.New("User registered successfully", res))
+}
+
+// Upsert username
+type upsertUsernameReq struct {
+	UserId   string `json:"user_id"`
+	Username string `json:"username"`
 }
 
 func (h *UserHandler) UpsertUserName(c *fiber.Ctx) error {
-	userId := c.Query("user_id")
-	userName := c.Query("username")
-	err := h.userService.CreateUserName(userId, userName)
+	var req upsertUsernameReq
+	if err := c.BodyParser(&req); err != nil {
+		return c.JSON(response.NewError("Unable to parse body"))
+	}
+	err := h.userService.CreateUserName(req.UserId, req.Username)
 	if err != nil {
 		return c.Status(400).JSON(response.NewError(err.Error()))
 	}

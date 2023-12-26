@@ -2,7 +2,6 @@ package services
 
 import (
 	"backend/internal/core/domain/database"
-	"backend/internal/core/domain/payload"
 	"backend/internal/core/ports"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
@@ -21,7 +20,7 @@ func NewUserService(repository ports.IUserRepository) *UserService {
 	}
 }
 
-func (s *UserService) GetUserById(userId string) (*payload.User, error) {
+func (s *UserService) GetUserById(userId string) (*database.User, error) {
 	user, err := s.userRepository.GetUserById(userId)
 	if err != nil {
 		return nil, err
@@ -39,15 +38,14 @@ func (s *UserService) Login(email string, password string) error {
 
 func (s *UserService) Register(payload *database.User) error {
 	payload.UserId = uuid.New().String()
-	bytes, err1 := bcrypt.GenerateFromPassword([]byte(payload.UserId), 14)
-	if err1 != nil {
-		return err1
+	bytes, err := bcrypt.GenerateFromPassword([]byte(payload.UserId), 14)
+	if err != nil {
+		return err
 	}
 	payload.Password = string(bytes)
 
-	err2 := s.userRepository.Register(&database.User{UserId: payload.UserId, Email: payload.Email, Password: payload.Password})
-	if err2 != nil {
-		return err2
+	if err := s.userRepository.Register(payload); err != nil {
+		return err
 	}
 	return nil
 }
