@@ -37,8 +37,9 @@ func (h *UserHandler) GetUserById(c *fiber.Ctx) error {
 		return c.Status(400).JSON(response.NewError(err.Error()))
 	}
 	userRes := payload.User{
-		UserId: user.UserId,
-		Email:  user.Email,
+		UserId:   user.UserId,
+		Email:    user.Email,
+		Username: user.UserName,
 	}
 	res := map[string]interface{}{
 		"user": userRes,
