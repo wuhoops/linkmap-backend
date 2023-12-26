@@ -1,11 +1,11 @@
 package main
 
 import (
-	"context"
 	"backend/internal/core/services"
 	"backend/internal/handler"
 	"backend/internal/repository"
 	"backend/internal/util/config"
+	"context"
 	"log/slog"
 	"os"
 )
@@ -25,10 +25,16 @@ func main() {
 	cardService := services.NewCardService(cardRepository, userRepository)
 	cardHandler := handler.NewCardHandlers(cardService)
 
+	//Social
+	socialRepository := repository.NewSocialRepository(db)
+	socialService := services.NewSocialService(socialRepository)
+	socialHandler := handler.NewSocialHandlers(socialService)
+
 	// Init router
 	router, err := handler.NewRouter(
 		*userHandler,
 		*cardHandler,
+		*socialHandler,
 	)
 	err = router.Serve(config.C.Address)
 	if err != nil {

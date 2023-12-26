@@ -14,6 +14,6 @@ const (
 type Social struct {
 	SocialId string `json:"social_id" gorm:"primaryKey"`
 	OwnerId  string `json:"owner_id" gorm:"not null"`
-	Topic    Topic  `json:"topic" gorm:"not null"`
+	Topic    Topic  `json:"topic" gorm:"primaryKey; not null"`
 	Link     string `json:"link" gorm:"not null"`
 }

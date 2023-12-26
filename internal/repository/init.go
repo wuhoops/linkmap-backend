@@ -28,6 +28,7 @@ func migrate() error {
 	if err := DB.AutoMigrate(
 		new(database.User),
 		new(database.Card),
+		new(database.Social),
 	); err != nil {
 		return err
 	}

@@ -13,6 +13,7 @@ type Router struct {
 func NewRouter(
 	userHandler UserHandler,
 	cardHandler CardHandler,
+	socialhandler SocialHandler,
 ) (*Router, error) {
 
 	router := fiber.New(fiber.Config{
