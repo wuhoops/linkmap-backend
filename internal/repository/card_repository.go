@@ -2,7 +2,6 @@ package repository
 
 import (
 	"backend/internal/core/domain/database"
-	"backend/internal/core/domain/payload"
 	"backend/internal/core/ports"
 	"gorm.io/gorm"
 )
@@ -28,8 +27,8 @@ func (r *CardRepository) CreateCard(payload *database.Card) error {
 	return nil
 }
 
-func (r *CardRepository) CardInfo(cardId string) (*payload.Card, error) {
-	var card *payload.Card
+func (r *CardRepository) GetCardById(cardId string) (*database.Card, error) {
+	var card *database.Card
 	result := r.client.Model(database.Card{}).First(&card, "card_id = ?", cardId)
 	if result.Error != nil {
 		return nil, result.Error
@@ -37,8 +36,8 @@ func (r *CardRepository) CardInfo(cardId string) (*payload.Card, error) {
 	return card, nil
 }
 
-func (r *CardRepository) ListCard(id string) ([]payload.Card, error) {
-	var cardList []payload.Card
+func (r *CardRepository) ListCard(id string) ([]*database.Card, error) {
+	var cardList []*database.Card
 	result := r.client.Model(database.Card{}).Where("owner_id = ?", id).Find(&cardList)
 	if result.Error != nil {
 		return nil, result.Error
@@ -46,12 +45,12 @@ func (r *CardRepository) ListCard(id string) ([]payload.Card, error) {
 	return cardList, nil
 }
 
-func (r *CardRepository) EditCard(newCard *payload.Card) error {
+func (r *CardRepository) EditCard(newCard *database.Card) (*database.Card, error) {
 	result := r.client.Model(database.Card{}).Where("card_id = ?", newCard.CardId).Updates(newCard)
 	if result.Error != nil {
-		return result.Error
+		return nil, result.Error
 	}
-	return nil
+	return newCard, nil
 }
 
 func (r *CardRepository) DeleteCard(cardId string) error {

@@ -5,6 +5,6 @@ type Card struct {
 	Topic       string `json:"topic" gorm:"not null"`
 	Description string `json:"description"`
 	Link        string `json:"link" gorm:"not null"`
-	OwnerID     string `json:"owner_id" gorm:"not null"`
-	Owner       User   `json:"owner" gorm:"foreignKey:OwnerID;references:UserId"`
+	OwnerId     string `json:"owner_id" gorm:"not null"`
+	Owner       User   `json:"owner" gorm:"foreignKey:OwnerId;references:UserId"`
 }

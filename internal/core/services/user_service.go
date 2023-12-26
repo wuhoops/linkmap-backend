@@ -21,8 +21,8 @@ func NewUserService(repository ports.IUserRepository) *UserService {
 	}
 }
 
-func (s *UserService) GetUserInfo(userId string) (*payload.User, error) {
-	user, err := s.userRepository.GetUserInfo(userId)
+func (s *UserService) GetUserById(userId string) (*payload.User, error) {
+	user, err := s.userRepository.GetUserById(userId)
 	if err != nil {
 		return nil, err
 	}

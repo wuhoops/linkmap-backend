@@ -2,7 +2,6 @@ package services
 
 import (
 	"backend/internal/core/domain/database"
-	"backend/internal/core/domain/payload"
 	"backend/internal/core/ports"
 	"github.com/google/uuid"
 )
@@ -22,8 +21,8 @@ func NewCardService(cardRepo ports.ICardRepository, userRepo ports.IUserReposito
 	}
 }
 
-func (s *CardService) CardInfo(cardId string) (*payload.Card, error) {
-	card, err := s.cardRepository.CardInfo(cardId)
+func (s *CardService) GetCardById(cardId string) (*database.Card, error) {
+	card, err := s.cardRepository.GetCardById(cardId)
 	if err != nil {
 		return nil, err
 	}
@@ -39,8 +38,8 @@ func (s *CardService) CreateCard(payload *database.Card) error {
 	return nil
 }
 
-func (s *CardService) ListCard(userId string) (*payload.CardList, error) {
-	if _, err := s.userRepository.GetUserInfo(userId); err != nil {
+func (s *CardService) ListCard(userId string) ([]*database.Card, error) {
+	if _, err := s.userRepository.GetUserById(userId); err != nil {
 		return nil, err
 	}
 
@@ -48,24 +47,24 @@ func (s *CardService) ListCard(userId string) (*payload.CardList, error) {
 	if err != nil {
 		return nil, err
 	}
-	cardMap := payload.CardList{Card: cards}
-	return &cardMap, nil
+	return cards, nil
 }
 
-func (s *CardService) EditCard(newCard *payload.Card) error {
-	if _, err := s.cardRepository.CardInfo(newCard.CardId); err != nil {
-		return err
+func (s *CardService) EditCard(newCard *database.Card) (*database.Card, error) {
+	if _, err := s.cardRepository.GetCardById(newCard.CardId); err != nil {
+		return nil, err
 	}
 
-	err := s.cardRepository.EditCard(newCard)
+	card, err := s.cardRepository.EditCard(newCard)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+
+	return card, nil
 }
 
 func (s *CardService) DeleteCard(cardId string) error {
-	if _, err := s.cardRepository.CardInfo(cardId); err != nil {
+	if _, err := s.cardRepository.GetCardById(cardId); err != nil {
 		return err
 	}
 

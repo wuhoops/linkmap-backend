@@ -5,5 +5,5 @@ type User struct {
 	Email    string `json:"email" gorm:"not null; unique"`
 	Password string `json:"password" gorm:"not null"`
 	UserName string `json:"username" gorm:"unique"`
-	Cards    []Card `json:"cards" gorm:"foreignKey:OwnerID; references:UserId"`
+	Cards    []Card `json:"cards" gorm:"foreignKey:OwnerId; references:UserId"`
 }

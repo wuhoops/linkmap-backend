@@ -20,9 +20,9 @@ func NewUserHandlers(userService ports.IUserService) *UserHandler {
 	}
 }
 
-func (h *UserHandler) GetUserInfo(c *fiber.Ctx) error {
+func (h *UserHandler) GetUserById(c *fiber.Ctx) error {
 	userId := c.Query("user_id")
-	user, err := h.userService.GetUserInfo(userId)
+	user, err := h.userService.GetUserById(userId)
 	if err != nil {
 		return c.Status(400).JSON(response.NewError(err.Error()))
 	}

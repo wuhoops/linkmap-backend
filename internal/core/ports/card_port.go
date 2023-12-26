@@ -2,29 +2,27 @@ package ports
 
 import (
 	"backend/internal/core/domain/database"
-	"backend/internal/core/domain/payload"
-
 	fiber "github.com/gofiber/fiber/v2"
 )
 
 type ICardService interface {
-	CardInfo(cardId string) (*payload.Card, error)
-	ListCard(userId string) (*payload.CardList, error)
+	GetCardById(cardId string) (*database.Card, error)
+	ListCard(userId string) ([]*database.Card, error)
 	CreateCard(payload *database.Card) error
-	EditCard(newCard *payload.Card) error
+	EditCard(newCard *database.Card) (*database.Card, error)
 	DeleteCard(cardId string) error
 }
 
 type ICardRepository interface {
-	CardInfo(cardId string) (*payload.Card, error)
-	ListCard(userId string) ([]payload.Card, error)
+	GetCardById(cardId string) (*database.Card, error)
+	ListCard(userId string) ([]*database.Card, error)
 	CreateCard(payload *database.Card) error
-	EditCard(newCard *payload.Card) error
+	EditCard(newCard *database.Card) (*database.Card, error)
 	DeleteCard(cardId string) error
 }
 
 type ICardHandlers interface {
-	CardInfo(c *fiber.Ctx) error
+	GetCardById(c *fiber.Ctx) error
 	ListCard(c *fiber.Ctx) error
 	CreateCard(c *fiber.Ctx) error
 	EditCard(c *fiber.Ctx) error
