@@ -19,11 +19,19 @@ func NewSocialRepository(db *gorm.DB) *SocialRepository {
 	}
 }
 
-func (r *SocialRepository) ListSocial(userId string) (*database.Social, error) {
-	var user *database.Social
-	result := r.client.Model(database.User{}).Where("user_id = ?", userId).First(&user)
+func (r *SocialRepository) ListSocial(userId string) ([]*database.Social, error) {
+	var social []*database.Social
+	result := r.client.Model(database.Social{}).Where("owner_id = ?", userId).Find(&social)
 	if result.Error != nil {
 		return nil, result.Error
 	}
-	return user, nil
+	return social, nil
+}
+
+func (r *SocialRepository) AddSocial(social *database.Social) error {
+	result := r.client.Model(database.Social{}).Create(social)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
 }

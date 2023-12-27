@@ -3,6 +3,7 @@ package services
 import (
 	"backend/internal/core/domain/database"
 	"backend/internal/core/ports"
+	"github.com/google/uuid"
 )
 
 type SocialService struct {
@@ -18,10 +19,19 @@ func NewSocialService(repository ports.ISocialRepository) *SocialService {
 	}
 }
 
-func (s *SocialService) ListSocial(userId string) (*database.Social, error) {
-	user, err := s.socialRepository.ListSocial(userId)
+func (s *SocialService) ListSocial(userId string) ([]*database.Social, error) {
+	social, err := s.socialRepository.ListSocial(userId)
 	if err != nil {
 		return nil, err
 	}
-	return user, nil
+	return social, nil
+}
+
+func (s *SocialService) AddSocial(social *database.Social) error {
+	social.SocialId = uuid.New().String()
+	err := s.socialRepository.AddSocial(social)
+	if err != nil {
+		return err
+	}
+	return nil
 }

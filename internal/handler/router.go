@@ -48,6 +48,12 @@ func NewRouter(
 			card.Patch("/update", cardHandler.EditCard)
 			card.Delete("/delete", cardHandler.DeleteCard)
 		}
+
+		social := api.Group("/social")
+		{
+			social.Get("/list", socialhandler.ListSocial)
+			social.Post("/create", socialhandler.AddSocial)
+		}
 	}
 
 	return &Router{
