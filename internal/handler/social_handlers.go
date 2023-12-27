@@ -26,7 +26,7 @@ type listSocialReq struct {
 }
 
 func (h *SocialHandler) ListSocial(c *fiber.Ctx) error {
-	var req getUserReq
+	var req listSocialReq
 	req.UserId = c.Query("user_id")
 	if req.UserId == "" {
 		return c.Status(400).JSON(response.NewError("Unable to parse body"))
@@ -60,10 +60,7 @@ func (h *SocialHandler) AddSocial(c *fiber.Ctx) error {
 	var req addSocialReq
 	err := c.BodyParser(&req)
 	if err != nil {
-		return c.Status(400).JSON(response.NewError("Unable to parse body"))
-	}
-	if string(req.Topic) != string(database.Instagram) {
-		return c.Status(400).JSON(response.NewError("Invalid social type"))
+		return c.Status(400).JSON(response.NewError(err.Error()))
 	}
 	socialReq := database.Social{
 		OwnerId: req.OwnerId,
@@ -77,4 +74,59 @@ func (h *SocialHandler) AddSocial(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(response.New("Add social successfully"))
+}
+
+// Update social
+type updateSocialReq struct {
+	SocialId string         `json:"social_id"`
+	OwnerId  string         `json:"owner_id"`
+	Topic    database.Topic `json:"topic"`
+	Link     string         `json:"link"`
+}
+
+func (h *SocialHandler) UpdateSocial(c *fiber.Ctx) error {
+	var req updateSocialReq
+	err := c.BodyParser(&req)
+	socialReq := database.Social{
+		SocialId: req.SocialId,
+		OwnerId:  req.OwnerId,
+		Topic:    req.Topic,
+		Link:     req.Link,
+	}
+
+	err = h.socialService.UpdateSocial(&socialReq)
+	if err != nil {
+		return c.Status(400).JSON(response.NewError(err.Error()))
+	}
+	
+	socialRes := payload.Social{
+		SocialId: socialReq.SocialId,
+		OwnerId:  socialReq.OwnerId,
+		Topic:    socialReq.Topic,
+		Link:     socialReq.Link,
+	}
+	res := map[string]interface{}{
+		"social": socialRes,
+	}
+	return c.JSON(response.New("Update social successfully", res))
+}
+
+// Delete social
+type deleteSocialReq struct {
+	SocialId string `json:"social_id"`
+}
+
+func (h *SocialHandler) DeleteSocial(c *fiber.Ctx) error {
+	var req deleteSocialReq
+	req.SocialId = c.Query("social_id")
+	if req.SocialId == "" {
+		return c.Status(400).JSON(response.NewError("Unable to parse body"))
+	}
+
+	err := h.socialService.DeleteSocial(req.SocialId)
+	if err != nil {
+		return c.Status(400).JSON(response.NewError(err.Error()))
+	}
+
+	return c.JSON(response.New("Delete social successfully"))
 }

@@ -53,6 +53,8 @@ func NewRouter(
 		{
 			social.Get("/list", socialhandler.ListSocial)
 			social.Post("/create", socialhandler.AddSocial)
+			social.Patch("/update", socialhandler.UpdateSocial)
+			social.Delete("/delete", socialhandler.DeleteSocial)
 		}
 	}
 

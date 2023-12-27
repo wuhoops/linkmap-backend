@@ -3,6 +3,7 @@ package repository
 import (
 	"backend/internal/core/domain/database"
 	"backend/internal/core/ports"
+	"errors"
 	"gorm.io/gorm"
 )
 
@@ -32,6 +33,28 @@ func (r *SocialRepository) AddSocial(social *database.Social) error {
 	result := r.client.Model(database.Social{}).Create(social)
 	if result.Error != nil {
 		return result.Error
+	}
+	return nil
+}
+
+func (r *SocialRepository) UpdateSocial(social *database.Social) error {
+	result := r.client.Model(database.Social{}).Where("social_id = ?", social.SocialId).Updates(social)
+	if result.Error != nil {
+		return result.Error
+	}
+	if result.RowsAffected == 0 {
+		return errors.New("no social with ID " + social.SocialId + " found")
+	}
+	return nil
+}
+
+func (r *SocialRepository) DeleteSocial(socialId string) error {
+	result := r.client.Model(database.Social{}).Where("social_id = ?", socialId).Delete(&database.Social{})
+	if result.Error != nil {
+		return result.Error
+	}
+	if result.RowsAffected == 0 {
+		return errors.New("no social with ID " + socialId + " found")
 	}
 	return nil
 }

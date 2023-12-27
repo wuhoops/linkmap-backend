@@ -35,3 +35,19 @@ func (s *SocialService) AddSocial(social *database.Social) error {
 	}
 	return nil
 }
+
+func (s *SocialService) UpdateSocial(social *database.Social) error {
+	err := s.socialRepository.UpdateSocial(social)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *SocialService) DeleteSocial(socialId string) error {
+	err := s.socialRepository.DeleteSocial(socialId)
+	if err != nil {
+		return err
+	}
+	return nil
+}
