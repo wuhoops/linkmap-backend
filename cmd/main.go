@@ -23,7 +23,7 @@ func main() {
 	//Card
 	cardRepository := repository.NewCardRepository(db)
 	cardService := services.NewCardService(cardRepository, userRepository)
-	cardHandler := handler.NewCardHandlers(cardService)
+	cardHandler := handler.NewCardHandlers(cardService, userService)
 
 	//Social
 	socialRepository := repository.NewSocialRepository(db)

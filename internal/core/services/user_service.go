@@ -57,3 +57,11 @@ func (s *UserService) CreateUserName(userId string, userName string) error {
 	}
 	return nil
 }
+
+func (s *UserService) GetUserByUsername(userName string) (*database.User, error) {
+	user, err := s.userRepository.GetUserByUsername(userName)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}

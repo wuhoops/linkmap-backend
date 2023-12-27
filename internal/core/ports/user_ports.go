@@ -10,6 +10,7 @@ type IUserService interface {
 	Login(email string, password string) error
 	Register(payload *database.User) error
 	CreateUserName(userId string, userName string) error
+	GetUserByUsername(userName string) (*database.User, error)
 }
 
 type IUserRepository interface {
@@ -17,6 +18,7 @@ type IUserRepository interface {
 	Login(email string, password string) error
 	Register(payload *database.User) error
 	CreateUserName(userId string, userName string) error
+	GetUserByUsername(userName string) (*database.User, error)
 }
 
 type IUserHandlers interface {
@@ -24,6 +26,7 @@ type IUserHandlers interface {
 	Login(c *fiber.Ctx) error
 	Register(c *fiber.Ctx) error
 	UpsertUserName(c *fiber.Ctx) error
+	GetUserByUsername(c *fiber.Ctx) error
 }
 
 type IServer interface {

@@ -10,13 +10,15 @@ import (
 
 type CardHandler struct {
 	cardService ports.ICardService
+	userService ports.IUserService
 }
 
 var _ ports.ICardHandlers = (*CardHandler)(nil)
 
-func NewCardHandlers(cardService ports.ICardService) *CardHandler {
+func NewCardHandlers(cardService ports.ICardService, userService ports.IUserService) *CardHandler {
 	return &CardHandler{
 		cardService: cardService,
+		userService: userService,
 	}
 }
 
@@ -95,14 +97,17 @@ func (h *CardHandler) GetCardById(c *fiber.Ctx) error {
 
 // List card
 type listCardReq struct {
-	CardId string `json:"card_id"`
+	Username string `json:"username"`
 }
 
 func (h *CardHandler) ListCard(c *fiber.Ctx) error {
 	var req listCardReq
-	req.CardId = c.Query("user_id")
-
-	cards, err := h.cardService.ListCard(req.CardId)
+	req.Username = c.Query("username")
+	user, err := h.userService.GetUserByUsername(req.Username)
+	if err != nil {
+		return c.Status(400).JSON(response.NewError(err.Error()))
+	}
+	cards, err := h.cardService.ListCard(user.UserId)
 	if err != nil {
 		return c.Status(400).JSON(response.NewError(err.Error()))
 	}

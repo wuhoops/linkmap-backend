@@ -51,3 +51,12 @@ func (r *UserRepository) CreateUserName(userId string, userName string) error {
 	}
 	return nil
 }
+
+func (r *UserRepository) GetUserByUsername(userName string) (*database.User, error) {
+	var user *database.User
+	result := r.client.Model(database.User{}).Where("user_name = ?", userName).First(&user)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return user, nil
+}

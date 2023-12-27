@@ -121,3 +121,28 @@ func (h *UserHandler) UpsertUserName(c *fiber.Ctx) error {
 	}
 	return c.JSON(response.New("Create username successfully"))
 }
+
+// Get user by username
+type getUserByUsernameReq struct {
+	Username string `json:"username"`
+}
+
+func (h *UserHandler) GetUserByUsername(c *fiber.Ctx) error {
+	var req getUserByUsernameReq
+	if err := c.BodyParser(&req); err != nil {
+		return c.JSON(response.NewError("Unable to parse body"))
+	}
+	user, err := h.userService.GetUserByUsername(req.Username)
+	if err != nil {
+		return c.Status(400).JSON(response.NewError(err.Error()))
+	}
+	userRes := payload.User{
+		UserId:   user.UserId,
+		Email:    user.Email,
+		Username: user.UserName,
+	}
+	res := map[string]interface{}{
+		"user": userRes,
+	}
+	return c.JSON(response.New("Get user info successfully", res))
+}
