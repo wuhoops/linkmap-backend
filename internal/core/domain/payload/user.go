@@ -5,7 +5,3 @@ type User struct {
 	Email    string `json:"email"`
 	Username string `json:"username"`
 }
-
-type UserInfo struct {
-	User User `json:"user"`
-}
