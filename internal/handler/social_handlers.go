@@ -46,14 +46,18 @@ func (h *SocialHandler) ListSocial(c *fiber.Ctx) error {
 		return c.Status(400).JSON(response.NewError(err.Error()))
 	}
 
-	res := make(map[string]interface{})
+	socialList := make([]payload.Social, 0)
 	for _, social := range social {
-		res[string(social.Topic)] = payload.Social{
+		socialList = append(socialList, payload.Social{
 			SocialId: social.SocialId,
 			OwnerId:  social.OwnerId,
 			Topic:    social.Topic,
 			Link:     social.Link,
-		}
+		})
+	}
+
+	res := map[string]interface{}{
+		"social_list": socialList,
 	}
 	return c.JSON(response.New("Get user info successfully", res))
 }

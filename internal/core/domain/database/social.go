@@ -8,12 +8,12 @@ import (
 type Topic string
 
 const (
-	Instagram Topic = "Instagram"
-	Facebook  Topic = "Facebook"
-	Line      Topic = "Line"
-	Linkedin  Topic = "Linkedin"
-	X         Topic = "X"
-	Whatsapp  Topic = "Whatsapp"
+	Instagram Topic = "instagram"
+	Facebook  Topic = "facebook"
+	Line      Topic = "line"
+	Linkedin  Topic = "linkedin"
+	X         Topic = "x"
+	Whatsapp  Topic = "whatsapp"
 )
 
 type Social struct {

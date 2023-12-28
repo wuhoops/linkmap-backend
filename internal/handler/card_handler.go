@@ -97,16 +97,16 @@ func (h *CardHandler) GetCardById(c *fiber.Ctx) error {
 
 // List card
 type listCardReq struct {
-	Username string `json:"username"`
+	UserId string `json:"user_id"`
 }
 
 func (h *CardHandler) ListCard(c *fiber.Ctx) error {
 	var req listCardReq
-	req.Username = c.Query("username")
-	if req.Username == "" {
+	req.UserId = c.Query("user_id")
+	if req.UserId == "" {
 		return c.Status(400).JSON(response.NewError("Unable to parse body"))
 	}
-	user, err := h.userService.GetUserByUsername(req.Username)
+	user, err := h.userService.GetUserByUsername(req.UserId)
 	if err != nil {
 		return c.Status(400).JSON(response.NewError(err.Error()))
 	}
