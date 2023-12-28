@@ -28,7 +28,7 @@ func main() {
 	//Social
 	socialRepository := repository.NewSocialRepository(db)
 	socialService := services.NewSocialService(socialRepository)
-	socialHandler := handler.NewSocialHandlers(socialService)
+	socialHandler := handler.NewSocialHandlers(socialService, userService)
 
 	// Init router
 	router, err := handler.NewRouter(

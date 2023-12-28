@@ -103,6 +103,9 @@ type listCardReq struct {
 func (h *CardHandler) ListCard(c *fiber.Ctx) error {
 	var req listCardReq
 	req.Username = c.Query("username")
+	if req.Username == "" {
+		return c.Status(400).JSON(response.NewError("Unable to parse body"))
+	}
 	user, err := h.userService.GetUserByUsername(req.Username)
 	if err != nil {
 		return c.Status(400).JSON(response.NewError(err.Error()))
@@ -174,6 +177,9 @@ type deleteCardReq struct {
 func (h *CardHandler) DeleteCard(c *fiber.Ctx) error {
 	var res deleteCardReq
 	res.CardId = c.Query("card_id")
+	if res.CardId == "" {
+		return c.Status(400).JSON(response.NewError("Unable to parse body"))
+	}
 
 	err := h.cardService.DeleteCard(res.CardId)
 	if err != nil {

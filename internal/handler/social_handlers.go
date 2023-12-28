@@ -10,13 +10,15 @@ import (
 
 type SocialHandler struct {
 	socialService ports.ISocialService
+	userService   ports.IUserService
 }
 
 var _ ports.ISocialHandlers = (*SocialHandler)(nil)
 
-func NewSocialHandlers(socialService ports.ISocialService) *SocialHandler {
+func NewSocialHandlers(socialService ports.ISocialService, userService ports.IUserService) *SocialHandler {
 	return &SocialHandler{
 		socialService: socialService,
+		userService:   userService,
 	}
 }
 
@@ -31,8 +33,15 @@ func (h *SocialHandler) ListSocial(c *fiber.Ctx) error {
 	if req.UserId == "" {
 		return c.Status(400).JSON(response.NewError("Unable to parse body"))
 	}
+	user, err := h.userService.GetUserByUsername(req.UserId)
+	if err != nil {
+		return c.Status(400).JSON(response.NewError(err.Error()))
+	}
+	if req.UserId == "" {
+		return c.Status(400).JSON(response.NewError("Unable to parse body"))
+	}
 
-	social, err := h.socialService.ListSocial(req.UserId)
+	social, err := h.socialService.ListSocial(user.UserId)
 	if err != nil {
 		return c.Status(400).JSON(response.NewError(err.Error()))
 	}
@@ -98,7 +107,7 @@ func (h *SocialHandler) UpdateSocial(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(400).JSON(response.NewError(err.Error()))
 	}
-	
+
 	socialRes := payload.Social{
 		SocialId: socialReq.SocialId,
 		OwnerId:  socialReq.OwnerId,
