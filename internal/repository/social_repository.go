@@ -22,7 +22,7 @@ func NewSocialRepository(db *gorm.DB) *SocialRepository {
 
 func (r *SocialRepository) ListSocial(userId string) ([]*database.Social, error) {
 	var social []*database.Social
-	result := r.client.Model(database.Social{}).Where("owner_id = ?", userId).Find(&social).Order("topic")
+	result := r.client.Model(database.Social{}).Where("owner_id = ?", userId).Order("topic").Find(&social)
 	if result.Error != nil {
 		return nil, result.Error
 	}
