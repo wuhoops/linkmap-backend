@@ -24,7 +24,7 @@ func NewRouter(
 		AppName:       "Go Hexagonal LinkMap API",
 	})
 	router.Use(Cors)
-
+	router.Use(Jwt)
 	router.All("/", func(c *fiber.Ctx) error {
 		return c.JSON(fiber.Map{
 			"Success": true,
