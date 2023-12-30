@@ -3,8 +3,12 @@ package services
 import (
 	"backend/internal/core/domain/database"
 	"backend/internal/core/ports"
+	"backend/internal/util/config"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
+	"log"
+	"time"
 )
 
 type UserService struct {
@@ -28,22 +32,36 @@ func (s *UserService) GetUserById(userId string) (*database.User, error) {
 	return user, nil
 }
 
-func (s *UserService) Login(email string, password string) error {
-	err := s.userRepository.Login(email, password)
+func (s *UserService) Login(payload *database.User) (*string, error) {
+	password := payload.Password
+	err := s.userRepository.Login(payload)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	if err := bcrypt.CompareHashAndPassword([]byte(payload.Password), []byte(password)); err != nil {
+		return nil, err
+	}
+	privateKey := []byte(config.C.Secret)
+	claims := jwt.MapClaims{
+		"email": payload.UserName,
+		"exp":   time.Now().Add(time.Hour * 72).Unix(),
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenString, err := token.SignedString(privateKey)
+	if err != nil {
+		log.Printf("token.SignedString: %v", err)
+		return nil, err
+	}
+	return &tokenString, nil
 }
 
 func (s *UserService) Register(payload *database.User) error {
 	payload.UserId = uuid.New().String()
-	bytes, err := bcrypt.GenerateFromPassword([]byte(payload.UserId), 14)
+	bytes, err := bcrypt.GenerateFromPassword([]byte(payload.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return err
 	}
 	payload.Password = string(bytes)
-
 	if err := s.userRepository.Register(payload); err != nil {
 		return err
 	}

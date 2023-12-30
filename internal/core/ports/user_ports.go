@@ -7,7 +7,7 @@ import (
 
 type IUserService interface {
 	GetUserById(userId string) (*database.User, error)
-	Login(email string, password string) error
+	Login(payload *database.User) (*string, error)
 	Register(payload *database.User) error
 	CreateUserName(userId string, userName string) error
 	GetUserByUsername(userName string) (*database.User, error)
@@ -15,7 +15,7 @@ type IUserService interface {
 
 type IUserRepository interface {
 	GetUserById(userId string) (*database.User, error)
-	Login(email string, password string) error
+	Login(payload *database.User) error
 	Register(payload *database.User) error
 	CreateUserName(userId string, userName string) error
 	GetUserByUsername(userName string) (*database.User, error)

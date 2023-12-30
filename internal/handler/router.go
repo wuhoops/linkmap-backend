@@ -24,20 +24,22 @@ func NewRouter(
 		AppName:       "Go Hexagonal LinkMap API",
 	})
 	router.Use(Cors)
-	router.Use(Jwt)
 	router.All("/", func(c *fiber.Ctx) error {
 		return c.JSON(fiber.Map{
 			"Success": true,
 			"Message": "Go Hexagonal LinkMap API",
 		})
 	})
+
+	router.Post("/api/user/login", userHandler.Login)
+	router.Post("api/user/register", userHandler.Register)
+
 	api := router.Group("/api")
+	api.Use(Jwt)
 	{
 		user := api.Group("/user")
 		{
 			user.Get("/info", userHandler.GetUserById)
-			user.Post("/register", userHandler.Register)
-			user.Post("/login", userHandler.Login)
 			user.Patch("/UpsertUsername", userHandler.UpsertUserName)
 		}
 

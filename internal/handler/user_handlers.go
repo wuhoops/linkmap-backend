@@ -5,12 +5,7 @@ import (
 	"backend/internal/core/domain/payload"
 	"backend/internal/core/domain/response"
 	"backend/internal/core/ports"
-	"backend/internal/util/config"
-	"log"
-	"time"
-
 	"github.com/gofiber/fiber/v2"
-	"github.com/golang-jwt/jwt/v5"
 )
 
 type UserHandler struct {
@@ -60,25 +55,29 @@ type loginReq struct {
 
 func (h *UserHandler) Login(c *fiber.Ctx) error {
 	var req loginReq
-	privateKey := []byte(config.C.Secret)
 	if err := c.BodyParser(&req); err != nil {
 		return c.JSON(response.NewError("Unable to parse body"))
 	}
 
-	claims := jwt.MapClaims{
-		"email": req.Email,
-		"exp":   time.Now().Add(time.Hour * 72).Unix(),
+	userReq := database.User{
+		Email:    req.Email,
+		Password: req.Password,
 	}
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-
-	tokenString, err := token.SignedString(privateKey)
-
+	token, err := h.userService.Login(&userReq)
 	if err != nil {
-		log.Printf("token.SignedString: %v", err)
-		return c.SendStatus(fiber.StatusInternalServerError)
+		return c.Status(400).JSON(response.NewError(err.Error()))
 	}
-	return c.JSON(response.New("Login successfully", fiber.Map{"token": tokenString}))
+	tokenString := *token
+	userRes := payload.User{
+		UserId:   userReq.UserId,
+		Email:    userReq.Email,
+		Username: userReq.UserName,
+	}
+	res := map[string]interface{}{
+		"user":  userRes,
+		"token": tokenString,
+	}
+	return c.JSON(response.New("Login successfully", res))
 }
 
 // Register

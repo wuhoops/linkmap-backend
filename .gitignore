@@ -1,3 +1,5 @@
 .env
 config.yaml
 .DS_Store
+tmp/build-errors.log
+tmp/main

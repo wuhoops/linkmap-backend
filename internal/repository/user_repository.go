@@ -29,7 +29,11 @@ func (r *UserRepository) GetUserById(userId string) (*database.User, error) {
 	return user, nil
 }
 
-func (r *UserRepository) Login(email string, password string) error {
+func (r *UserRepository) Login(payload *database.User) error {
+	result := r.client.Model(database.User{}).Where("email = ?", payload.Email).First(&payload)
+	if result.Error != nil {
+		return result.Error
+	}
 	return nil
 }
 
