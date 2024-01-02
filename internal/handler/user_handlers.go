@@ -197,24 +197,24 @@ func (h *UserHandler) RefreshToken(c *fiber.Ctx) error {
 	}
 	storedRefreshToken, err := h.userService.GetRefreshToken(req.Username)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to get stored refresh token"})
+		return c.Status(500).JSON(response.NewError(err.Error()))
 	}
 	if storedRefreshToken != req.RefreshToken {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid refresh token"})
+		return c.Status(400).JSON(response.NewError("Invalid refresh token"))
 	}
 	accessToken, err := h.userService.GenerateToken(req.Username, time.Now().Add(time.Minute*15))
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to generate access token"})
+		return c.Status(500).JSON(response.NewError("Failed to generate access token"))
 	}
 
 	refreshToken, err := h.userService.GenerateToken(req.Username, time.Now().Add(time.Hour*12))
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to generate refresh token"})
+		return c.Status(500).JSON(response.NewError("Failed to generate refresh token"))
 	}
 
 	err = h.userService.SetRefreshToken(req.Username, refreshToken, time.Hour*12)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to store refresh token"})
+		return c.Status(500).JSON(response.NewError("Failed to store refresh token"))
 	}
 
 	return c.JSON(fiber.Map{
