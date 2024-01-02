@@ -182,12 +182,16 @@ func (h *UserHandler) GetUserByUsername(c *fiber.Ctx) error {
 
 // Refresh token
 type refreshTokenReq struct {
-	Username string `json:"username"`
+	Username     string `json:"username"`
+	RefreshToken string `json:"refresh_token"`
 }
 
 func (h *UserHandler) RefreshToken(c *fiber.Ctx) error {
 	var req refreshTokenReq
-	req.Username = c.Query("username")
+	err := c.BodyParser(&req)
+	if err != nil {
+		return c.Status(400).JSON(response.NewError("Unable to parse body"))
+	}
 	if req.Username == "" {
 		return c.Status(400).JSON(response.NewError("Unable to parse body"))
 	}

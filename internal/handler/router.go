@@ -32,7 +32,8 @@ func NewRouter(
 	})
 
 	router.Post("/api/user/login", userHandler.Login)
-	router.Post("api/user/register", userHandler.Register)
+	router.Post("/api/user/register", userHandler.Register)
+	router.Post("/api/user/refresh", userHandler.RefreshToken)
 
 	api := router.Group("/api")
 	api.Use(Jwt)
