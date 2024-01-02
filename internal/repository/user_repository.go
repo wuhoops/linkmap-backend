@@ -3,20 +3,24 @@ package repository
 import (
 	"backend/internal/core/domain/database"
 	"backend/internal/core/ports"
+	"context"
 	"errors"
+	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
+	"time"
 )
 
 type UserRepository struct {
 	client *gorm.DB
+	redis  *redis.Client
 }
 
 // This line is for get feedback in case we are not implementing the interface correctly
 var _ ports.IUserRepository = (*UserRepository)(nil)
 
-func NewUserRepository(db *gorm.DB) *UserRepository {
+func NewUserRepository(db *gorm.DB, redis *redis.Client) *UserRepository {
 	return &UserRepository{
-		db,
+		db, redis,
 	}
 }
 
@@ -63,4 +67,22 @@ func (r *UserRepository) GetUserByUsername(userName string) (*database.User, err
 		return nil, result.Error
 	}
 	return user, nil
+}
+
+func (r *UserRepository) SetRefreshToken(key string, refreshToken string, expiration time.Duration) error {
+	ctx := context.Background()
+	err := r.redis.Set(ctx, key, refreshToken, expiration).Err()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r *UserRepository) GetRefreshToken(username string) (string, error) {
+	ctx := context.Background()
+	val, err := r.redis.Get(ctx, username).Result()
+	if err != nil {
+		return "", err
+	}
+	return val, nil
 }

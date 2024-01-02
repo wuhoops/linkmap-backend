@@ -32,27 +32,16 @@ func (s *UserService) GetUserById(userId string) (*database.User, error) {
 	return user, nil
 }
 
-func (s *UserService) Login(payload *database.User) (*string, error) {
+func (s *UserService) Login(payload *database.User) error {
 	password := payload.Password
 	err := s.userRepository.Login(payload)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	if err := bcrypt.CompareHashAndPassword([]byte(payload.Password), []byte(password)); err != nil {
-		return nil, err
+		return err
 	}
-	privateKey := []byte(config.C.Secret)
-	claims := jwt.MapClaims{
-		"email": payload.UserName,
-		"exp":   time.Now().Add(time.Hour * 72).Unix(),
-	}
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString(privateKey)
-	if err != nil {
-		log.Printf("token.SignedString: %v", err)
-		return nil, err
-	}
-	return &tokenString, nil
+	return nil
 }
 
 func (s *UserService) Register(payload *database.User) error {
@@ -82,4 +71,29 @@ func (s *UserService) GetUserByUsername(userName string) (*database.User, error)
 		return nil, err
 	}
 	return user, nil
+}
+
+func (s *UserService) SetRefreshToken(username string, refreshToken string, expiration time.Duration) error {
+	key := "refresh_" + username
+	err := s.userRepository.SetRefreshToken(key, refreshToken, expiration)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *UserService) GenerateToken(username string, expiration time.Time) (string, error) {
+	privateKey := []byte(config.C.Secret)
+	claims := jwt.MapClaims{
+		"name": username,
+		"exp":  expiration.Unix(),
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenString, err := token.SignedString(privateKey)
+	if err != nil {
+		log.Printf("token.SignedString: %v", err)
+		return "", err
+	}
+	return tokenString, nil
+
 }

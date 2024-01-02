@@ -3,14 +3,17 @@ package ports
 import (
 	"backend/internal/core/domain/database"
 	"github.com/gofiber/fiber/v2"
+	"time"
 )
 
 type IUserService interface {
 	GetUserById(userId string) (*database.User, error)
-	Login(payload *database.User) (*string, error)
+	Login(payload *database.User) error
 	Register(payload *database.User) error
 	CreateUserName(userId string, userName string) error
 	GetUserByUsername(userName string) (*database.User, error)
+	SetRefreshToken(username string, refreshToken string, expiration time.Duration) error
+	GenerateToken(username string, expiration time.Time) (string, error)
 }
 
 type IUserRepository interface {
@@ -19,6 +22,8 @@ type IUserRepository interface {
 	Register(payload *database.User) error
 	CreateUserName(userId string, userName string) error
 	GetUserByUsername(userName string) (*database.User, error)
+	SetRefreshToken(key string, refreshToken string, expiration time.Duration) error
+	GetRefreshToken(key string) (string, error)
 }
 
 type IUserHandlers interface {

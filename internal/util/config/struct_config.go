@@ -7,4 +7,5 @@ type config struct {
 	Cors        []string    `yaml:"cors" validate:"required"`
 	DBConn      string      `yaml:"DBConn" validate:"required"`
 	Secret      string      `yaml:"secret" validate:"required"`
+	Redis       string      `yaml:"redis" validate:"required"`
 }

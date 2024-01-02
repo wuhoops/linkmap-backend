@@ -3,7 +3,7 @@ package repository
 import (
 	"backend/internal/core/domain/database"
 	"backend/internal/util/config"
-	"context"
+	"github.com/redis/go-redis/v9"
 
 	"github.com/sirupsen/logrus"
 	"gorm.io/driver/postgres"
@@ -12,7 +12,7 @@ import (
 
 var DB *gorm.DB
 
-func NewDB(ctx context.Context) (*gorm.DB, error) {
+func NewDB() (*gorm.DB, error) {
 	dsn := config.C.DBConn
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	DB = db
@@ -22,6 +22,17 @@ func NewDB(ctx context.Context) (*gorm.DB, error) {
 
 	logrus.Debugln("INITIALIZE DB CONNECTION")
 	return db, err
+}
+
+func InitRedis() (*redis.Client, error) {
+	opt, err := redis.ParseURL(config.C.Redis)
+	if err != nil {
+		panic(err)
+	}
+
+	client := redis.NewClient(opt)
+	logrus.Debugln("INITIALIZE REDIS CONNECTION")
+	return client, nil
 }
 
 func migrate() error {

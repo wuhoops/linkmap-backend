@@ -6,6 +6,7 @@ import (
 	"backend/internal/core/domain/response"
 	"backend/internal/core/ports"
 	"github.com/gofiber/fiber/v2"
+	"time"
 )
 
 type UserHandler struct {
@@ -63,19 +64,33 @@ func (h *UserHandler) Login(c *fiber.Ctx) error {
 		Email:    req.Email,
 		Password: req.Password,
 	}
-	token, err := h.userService.Login(&userReq)
+	err := h.userService.Login(&userReq)
 	if err != nil {
 		return c.Status(400).JSON(response.NewError(err.Error()))
 	}
-	tokenString := *token
+
+	accessToken, err := h.userService.GenerateToken(userReq.UserName, time.Now().Add(time.Minute*15))
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to generate access token"})
+	}
+	refreshToken, err := h.userService.GenerateToken(userReq.UserName, time.Now().Add(time.Hour*12))
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to generate refresh token"})
+	}
+	err = h.userService.SetRefreshToken(userReq.UserName, refreshToken, time.Hour*12)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to store refresh token"})
+	}
+
 	userRes := payload.User{
 		UserId:   userReq.UserId,
 		Email:    userReq.Email,
 		Username: userReq.UserName,
 	}
 	res := map[string]interface{}{
-		"user":  userRes,
-		"token": tokenString,
+		"user":          userRes,
+		"access_token":  accessToken,
+		"refresh_token": refreshToken,
 	}
 	return c.JSON(response.New("Login successfully", res))
 }
@@ -163,4 +178,36 @@ func (h *UserHandler) GetUserByUsername(c *fiber.Ctx) error {
 		"user": userRes,
 	}
 	return c.JSON(response.New("Get user info successfully", res))
+}
+
+// Refresh token
+type refreshTokenReq struct {
+	Username string `json:"username"`
+}
+
+func (h *UserHandler) RefreshToken(c *fiber.Ctx) error {
+	var req refreshTokenReq
+	req.Username = c.Query("username")
+	if req.Username == "" {
+		return c.Status(400).JSON(response.NewError("Unable to parse body"))
+	}
+	accessToken, err := h.userService.GenerateToken(req.Username, time.Now().Add(time.Minute*15))
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to generate access token"})
+	}
+
+	refreshToken, err := h.userService.GenerateToken(req.Username, time.Now().Add(time.Hour*12))
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to generate refresh token"})
+	}
+
+	err = h.userService.SetRefreshToken(req.Username, refreshToken, time.Hour*12)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to store refresh token"})
+	}
+
+	return c.JSON(fiber.Map{
+		"access_token":  accessToken,
+		"refresh_token": refreshToken,
+	})
 }

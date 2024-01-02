@@ -5,18 +5,17 @@ import (
 	"backend/internal/handler"
 	"backend/internal/repository"
 	"backend/internal/util/config"
-	"context"
 	"log/slog"
 	"os"
 )
 
 func main() {
 	// Init database
-	ctx := context.Background()
-	db, err := repository.NewDB(ctx)
+	db, err := repository.NewDB()
+	redis, err := repository.InitRedis()
 
 	//User
-	userRepository := repository.NewUserRepository(db)
+	userRepository := repository.NewUserRepository(db, redis)
 	userService := services.NewUserService(userRepository)
 	userHandler := handler.NewUserHandlers(userService)
 
