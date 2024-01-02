@@ -13,6 +13,7 @@ type IUserService interface {
 	CreateUserName(userId string, userName string) error
 	GetUserByUsername(userName string) (*database.User, error)
 	SetRefreshToken(username string, refreshToken string, expiration time.Duration) error
+	GetRefreshToken(username string) (string, error)
 	GenerateToken(username string, expiration time.Time) (string, error)
 }
 

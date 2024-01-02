@@ -82,6 +82,15 @@ func (s *UserService) SetRefreshToken(username string, refreshToken string, expi
 	return nil
 }
 
+func (s *UserService) GetRefreshToken(username string) (string, error) {
+	key := "refresh_" + username
+	refreshToken, err := s.userRepository.GetRefreshToken(key)
+	if err != nil {
+		return "", err
+	}
+	return refreshToken, nil
+}
+
 func (s *UserService) GenerateToken(username string, expiration time.Time) (string, error) {
 	privateKey := []byte(config.C.Secret)
 	claims := jwt.MapClaims{

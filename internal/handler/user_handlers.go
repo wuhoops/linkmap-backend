@@ -195,6 +195,13 @@ func (h *UserHandler) RefreshToken(c *fiber.Ctx) error {
 	if req.Username == "" {
 		return c.Status(400).JSON(response.NewError("Unable to parse body"))
 	}
+	storedRefreshToken, err := h.userService.GetRefreshToken(req.Username)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to get stored refresh token"})
+	}
+	if storedRefreshToken != req.RefreshToken {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid refresh token"})
+	}
 	accessToken, err := h.userService.GenerateToken(req.Username, time.Now().Add(time.Minute*15))
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to generate access token"})
