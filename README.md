@@ -7,4 +7,5 @@ Frontend: https://github.com/wuhoops/linkmap-frontend <br />
 
 Backend: https://github.com/wuhoops/linkmap-backend
 - RESTful API written in go fiber
-- Hexagonal architecture 
+- Hexagonal architecture
+- Authenticate with JWT using Access token and Refresh token
