@@ -34,6 +34,8 @@ func NewRouter(
 	router.Post("/api/user/login", userHandler.Login)
 	router.Post("/api/user/register", userHandler.Register)
 	router.Post("/api/user/refresh", userHandler.RefreshToken)
+	router.Get("/api/card//list", cardHandler.ListCard)
+	router.Get("/api/social/list", socialhandler.ListSocial)
 
 	api := router.Group("/api")
 	api.Use(Jwt)
@@ -46,7 +48,6 @@ func NewRouter(
 
 		card := api.Group("/card")
 		{
-			card.Get("/list", cardHandler.ListCard)
 			card.Post("/create", cardHandler.CreateCard)
 			card.Patch("/update", cardHandler.EditCard)
 			card.Delete("/delete", cardHandler.DeleteCard)
@@ -54,7 +55,6 @@ func NewRouter(
 
 		social := api.Group("/social")
 		{
-			social.Get("/list", socialhandler.ListSocial)
 			social.Post("/create", socialhandler.AddSocial)
 			social.Patch("/update", socialhandler.UpdateSocial)
 			social.Delete("/delete", socialhandler.DeleteSocial)
