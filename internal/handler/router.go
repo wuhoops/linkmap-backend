@@ -34,7 +34,7 @@ func NewRouter(
 	router.Post("/api/user/login", userHandler.Login)
 	router.Post("/api/user/register", userHandler.Register)
 	router.Post("/api/user/refresh", userHandler.RefreshToken)
-	router.Get("/api/card//list", cardHandler.ListCard)
+	router.Get("/api/card/list", cardHandler.ListCard)
 	router.Get("/api/social/list", socialhandler.ListSocial)
 
 	api := router.Group("/api")
