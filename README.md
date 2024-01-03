@@ -5,6 +5,6 @@ Frontend: https://github.com/wuhoops/linkmap-frontend <br />
 - TailwindCSS
 - Axios
 
-Backend: https://github.com/wuhoops/linkmap-backend\
+Backend: https://github.com/wuhoops/linkmap-backend
 - RESTful API written in go fiber
 - Hexagonal architecture 
